@@ -106,11 +106,11 @@ Write identifiers, comments, and commit messages in English. User-facing text st
 
 ## More instructions
 
-Claude Code loads these automatically. Other agents: read the matching file first.
+Claude Code, Cursor, Copilot, and Gemini CLI load these automatically. Other agents: read the matching file first.
 
 | When | Read |
 | --- | --- |
 | Running commands: local setup, URLs, DB backup | `AGENTS.local.md` (gitignored; may not exist) |
-| Editing `application/**` (CodeIgniter 3) | `.claude/rules/codeigniter3.md` |
-| Editing `app/`, `routes/`, `config/`, `database/`, `tests/`, `resources/views/`, or running tests (Laravel + Blade) | `.claude/rules/laravel.md` |
-| Editing `resources/js/**` (Vue + Inertia) | `.claude/rules/vue.md` |
+| Editing `application/**` (CodeIgniter 3) | `.agents/rules/codeigniter3.md` |
+| Editing `app/`, `routes/`, `config/`, `database/`, `tests/`, `resources/views/`, or running tests (Laravel + Blade) | `.agents/rules/laravel.md` |
+| Editing `resources/js/**` (Vue + Inertia) | `.agents/rules/vue.md` |

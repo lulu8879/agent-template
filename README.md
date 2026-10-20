@@ -13,23 +13,47 @@ Shared instructions for AI coding agents (Claude Code, Codex, Cursor, Copilot, G
 | `AGENTS.local.md` | Your machine only: DDEV/Laragon/Herd commands, local URL, DB backup command |
 | `CLAUDE.local.md` | `@AGENTS.local.md` import for Claude Code |
 | `.claude/settings.json` | Claude Code: no commit/PR attribution, asks before `git push` |
-| `.claude/rules/codeigniter3.md` | CI3 rules, loaded when `application/**` files are touched |
-| `.claude/rules/laravel.md` | Laravel + Blade + test-database rules |
-| `.claude/rules/vue.md` | Vue 3 + Inertia rules |
-| `.gemini/settings.json` | Makes Gemini CLI read `AGENTS.md` and `AGENTS.local.md` |
+| `.agents/rules/codeigniter3.md` | CI3 rules (`application/**`) |
+| `.agents/rules/laravel.md` | Laravel + Blade + test-database rules |
+| `.agents/rules/vue.md` | Vue 3 + Inertia rules |
+| `.claude/rules/*.md` | Symlinks to `.agents/rules/` for Claude Code |
+| `.cursor/rules/*.mdc` | Symlinks to `.agents/rules/` for Cursor |
+| `.github/instructions/*.instructions.md` | Symlinks to `.agents/rules/` for Copilot |
+| `GEMINI.md` | Imports `.agents/rules/*.md` for Gemini CLI |
+| `.gemini/settings.json` | Makes Gemini CLI read `AGENTS.md`, `AGENTS.local.md`, and `GEMINI.md` |
+
+## Stack rules
+
+Edit the rules only in `.agents/rules/`. Each file's frontmatter carries the file patterns once per tool, so the same file works everywhere:
+
+| Key | Read by |
+| --- | --- |
+| `paths` | Claude Code |
+| `globs`, `alwaysApply`, `description` | Cursor |
+| `applyTo` | Copilot |
+
+When you change a rule's file patterns, update all three keys. Each tool ignores the keys it doesn't use.
 
 ## Supported agents
 
-| Agent | How it reads the rules | Extra setup |
-| --- | --- | --- |
-| Claude Code | `CLAUDE.md` imports `AGENTS.md`, `CLAUDE.local.md` imports `AGENTS.local.md`, and `.claude/rules/*.md` load when matching files are touched | None |
-| Codex | Reads `AGENTS.md` natively | None |
-| Cursor | Reads `AGENTS.md` natively | None |
-| VS Code / Copilot | Reads `AGENTS.md` (`chat.useAgentsMdFile` setting, on by default in recent versions) | Turn the setting on if your version has it off |
-| Gemini CLI | Reads `GEMINI.md` by default; `.gemini/settings.json` adds `AGENTS.md` and `AGENTS.local.md` | None. On older versions, use `"contextFileName": [...]` instead of `context.fileName` |
-| Command Code | Not confirmed | If it doesn't pick up `AGENTS.md`, point its instruction file at it |
+| Agent | Main rules | Stack rules | Local file | Extra setup |
+| --- | --- | --- | --- | --- |
+| Claude Code | `CLAUDE.md` imports `AGENTS.md` | `.claude/rules/` symlinks, loaded when matching files are touched | `CLAUDE.local.md` imports it | None |
+| Cursor | `AGENTS.md`, natively | `.cursor/rules/` symlinks, attached when matching files are in context | Via the `AGENTS.md` table | None |
+| VS Code / Copilot | `AGENTS.md` (`chat.useAgentsMdFile`, on by default in recent versions) | `.github/instructions/` symlinks, applied to matching files | Via the `AGENTS.md` table | Turn the setting on if your version has it off |
+| Gemini CLI | `AGENTS.md`, via `.gemini/settings.json` | `GEMINI.md` imports, always loaded | Loaded via `.gemini/settings.json` | On older versions, use `"contextFileName": [...]` instead of `context.fileName` |
+| Codex | `AGENTS.md`, natively | Via the `AGENTS.md` table | Via the `AGENTS.md` table | None |
+| Command Code | Not confirmed | Via the `AGENTS.md` table | Via the `AGENTS.md` table | If it doesn't pick up `AGENTS.md`, point its instruction file at it |
 
-Only Claude Code and Gemini CLI load `AGENTS.local.md` automatically, and only Claude Code loads `.claude/rules/*.md`. The other agents reach both through the "More instructions" table at the end of `AGENTS.md`.
+Codex and Command Code have no rules folder of their own, so they follow the "More instructions" table at the end of `AGENTS.md`.
+
+### Windows
+
+The per-tool rule files are symlinks. On Windows, Git checks them out as one-line text files unless symlinks are enabled. Turn on Developer Mode, then clone with:
+
+```bash
+git clone -c core.symlinks=true <repo-url>
+```
 
 ## Use it in a project
 
@@ -46,10 +70,16 @@ Only Claude Code and Gemini CLI load `AGENTS.local.md` automatically, and only C
    CLAUDE.local.md
    ```
 
-3. Delete the stack files the project doesn't use, and their rows in the `AGENTS.md` table:
-   - CodeIgniter 3: keep `codeigniter3.md`; delete `laravel.md` and `vue.md`.
-   - Laravel + Blade: delete `codeigniter3.md` and `vue.md`.
-   - Laravel + Vue/Inertia: delete `codeigniter3.md`.
+3. Delete the stacks the project doesn't use:
+   - CodeIgniter 3: remove `laravel` and `vue`.
+   - Laravel + Blade: remove `codeigniter3` and `vue`.
+   - Laravel + Vue/Inertia: remove `codeigniter3`.
+
+   For each stack you remove, delete its file in `.agents/rules/`, its three symlinks, its import line in `GEMINI.md`, and its row in the `AGENTS.md` table. For example, to remove `vue`:
+
+   ```bash
+   rm .agents/rules/vue.md .claude/rules/vue.md .cursor/rules/vue.mdc .github/instructions/vue.instructions.md
+   ```
 4. Fill in the TODO sections at the top of `AGENTS.md` (project line, commands, project rules).
 5. Rewrite `AGENTS.local.md` for your machine. Not on DDEV? The comment at its top has a non-DDEV example.
 6. Laravel: make sure tests can't hit the dev database. Either `phpunit.xml` uses sqlite `:memory:`, or `.env.testing` (a copy of `.env`) has its own `DB_DATABASE`.
