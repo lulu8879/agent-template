@@ -6,17 +6,17 @@ Shared instructions for AI coding agents (Claude Code, Codex, Cursor, Copilot, G
 
 ## Files
 
-| File | Shared? | Purpose |
-| --- | --- | --- |
-| `AGENTS.md` | Committed | Project section (fill in) + team rules: ask first, protect the database, coding guidelines, git, language |
-| `CLAUDE.md` | Committed | `@AGENTS.md` import, so Claude Code reads the same rules |
-| `AGENTS.local.md` | Gitignored | Your machine only: DDEV/Laragon/Herd commands, local URL, DB backup command |
-| `CLAUDE.local.md` | Gitignored | `@AGENTS.local.md` import for Claude Code |
-| `.claude/settings.json` | Committed | Claude Code: no commit/PR attribution, asks before `git push` |
-| `.claude/rules/codeigniter3.md` | Committed | CI3 rules, loaded when `application/**` files are touched |
-| `.claude/rules/laravel.md` | Committed | Laravel + Blade + test-database rules |
-| `.claude/rules/vue.md` | Committed | Vue 3 + Inertia rules |
-| `.gemini/settings.json` | Committed | Makes Gemini CLI read `AGENTS.md` and `AGENTS.local.md` |
+| File | Purpose |
+| --- | --- |
+| `AGENTS.md` | Project section (fill in) + team rules: ask first, protect the database, coding guidelines, git, language |
+| `CLAUDE.md` | `@AGENTS.md` import, so Claude Code reads the same rules |
+| `AGENTS.local.md` | Your machine only: DDEV/Laragon/Herd commands, local URL, DB backup command |
+| `CLAUDE.local.md` | `@AGENTS.local.md` import for Claude Code |
+| `.claude/settings.json` | Claude Code: no commit/PR attribution, asks before `git push` |
+| `.claude/rules/codeigniter3.md` | CI3 rules, loaded when `application/**` files are touched |
+| `.claude/rules/laravel.md` | Laravel + Blade + test-database rules |
+| `.claude/rules/vue.md` | Vue 3 + Inertia rules |
+| `.gemini/settings.json` | Makes Gemini CLI read `AGENTS.md` and `AGENTS.local.md` |
 
 Claude Code loads the rule files and local files automatically. Other agents reach them through the "More instructions" table at the end of `AGENTS.md`.
 
@@ -48,7 +48,6 @@ If the project already has an `AGENTS.md`, move its content into the project sec
 
 ## Notes
 
-- Global gitignore: if yours ignores `CLAUDE.md` or `.claude/`, add those files with `git add -f` once. After that they're tracked normally.
 - Team rules live below the "Team rules" comment in `AGENTS.md`. Change them here, then copy them to projects; don't edit them per project.
 - Coding guidelines come from [forrestchang/andrej-karpathy-skills](https://github.com/forrestchang/andrej-karpathy-skills) (MIT).
 - MCP servers (Context7, Laravel Boost) are optional and set up per person in their own agent. The rules work without them.
