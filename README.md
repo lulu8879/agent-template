@@ -18,7 +18,18 @@ Shared instructions for AI coding agents (Claude Code, Codex, Cursor, Copilot, G
 | `.claude/rules/vue.md` | Vue 3 + Inertia rules |
 | `.gemini/settings.json` | Makes Gemini CLI read `AGENTS.md` and `AGENTS.local.md` |
 
-Claude Code loads the rule files and local files automatically. Other agents reach them through the "More instructions" table at the end of `AGENTS.md`.
+## Supported agents
+
+| Agent | How it reads the rules | Extra setup |
+| --- | --- | --- |
+| Claude Code | `CLAUDE.md` imports `AGENTS.md`, `CLAUDE.local.md` imports `AGENTS.local.md`, and `.claude/rules/*.md` load when matching files are touched | None |
+| Codex | Reads `AGENTS.md` natively | None |
+| Cursor | Reads `AGENTS.md` natively | None |
+| VS Code / Copilot | Reads `AGENTS.md` (`chat.useAgentsMdFile` setting, on by default in recent versions) | Turn the setting on if your version has it off |
+| Gemini CLI | Reads `GEMINI.md` by default; `.gemini/settings.json` adds `AGENTS.md` and `AGENTS.local.md` | None. On older versions, use `"contextFileName": [...]` instead of `context.fileName` |
+| Command Code | Not confirmed | If it doesn't pick up `AGENTS.md`, point its instruction file at it |
+
+Only Claude Code and Gemini CLI load `AGENTS.local.md` automatically, and only Claude Code loads `.claude/rules/*.md`. The other agents reach both through the "More instructions" table at the end of `AGENTS.md`.
 
 ## Use it in a project
 
