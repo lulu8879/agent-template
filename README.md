@@ -95,12 +95,20 @@ Instead of the steps above, you can paste this into any agent (Claude Code, Code
 Set up the agent template from https://github.com/lulu8879/agent-template in this project. Read its README.md first.
 
 1. Clone it to a temporary folder outside this project (git clone --depth 1 -c core.symlinks=true). Copy every file except README.md and .git into the project root, keeping symlinks as symlinks (e.g. rsync -a), then delete the temporary clone. Ask before overwriting any existing file. If the project already has an AGENTS.md, merge its content into the project section instead.
-2. Add AGENTS.local.md and CLAUDE.local.md to .gitignore.
-3. Detect the stack: CodeIgniter 3 (application/ and system/), Laravel (artisan), Vue/Inertia (package.json). For each stack the project doesn't use, delete its file in .agents/rules/, its three symlinks, its import line in GEMINI.md, and its row in the AGENTS.md table.
-4. Fill in the TODO sections at the top of AGENTS.md from what you find in the repo. Write only facts you verified.
-5. Fill in AGENTS.local.md for this machine: DDEV or not, local URL, DB backup command.
-6. Laravel: check whether tests could use the dev database (phpunit.xml, .env.testing). If they could, tell me; don't change it yet.
-7. Summarize what you changed. Don't commit.
+2. Ask me which agents to set up: (a) all agents, (b) only the agent running this setup, or (c) a list I choose. Always keep AGENTS.md, AGENTS.local.md, and .agents/rules/. For each agent not chosen, delete its files:
+   - Claude Code: CLAUDE.md, CLAUDE.local.md, .claude/settings.json, .claude/rules/
+   - Cursor: .cursor/rules/
+   - Copilot: .github/instructions/
+   - Gemini CLI: GEMINI.md, .gemini/settings.json
+   Delete only the files the template added; keep anything the project already had in those folders.
+   - Codex, Command Code: no files of their own (they read AGENTS.md)
+   Then update the first line of the "More instructions" section in AGENTS.md so it names only the kept agents that load rules automatically.
+3. Add AGENTS.local.md to .gitignore, and CLAUDE.local.md too if Claude Code is kept.
+4. Detect the stack: CodeIgniter 3 (application/ and system/), Laravel (artisan), Vue/Inertia (package.json). For each stack the project doesn't use, delete its file in .agents/rules/, its remaining symlinks, its import line in GEMINI.md (if kept), and its row in the AGENTS.md table.
+5. Fill in the TODO sections at the top of AGENTS.md from what you find in the repo. Write only facts you verified.
+6. Fill in AGENTS.local.md for this machine: DDEV or not, local URL, DB backup command.
+7. Laravel: check whether tests could use the dev database (phpunit.xml, .env.testing). If they could, tell me; don't change it yet.
+8. Summarize what you changed. Don't commit.
 
 Ask me if anything is unclear.
 ```
