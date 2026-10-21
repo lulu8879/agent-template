@@ -57,10 +57,10 @@ git clone -c core.symlinks=true <repo-url>
 
 ## Use it in a project
 
-1. Copy everything except `README.md` into the project root:
+1. From the project root, clone the template to a temporary folder, copy everything except `README.md` and `.git`, then remove the clone:
 
    ```bash
-   rsync -a --exclude README.md --exclude .git /path/to/agent-template/ /path/to/project/
+   git clone --depth 1 -c core.symlinks=true https://github.com/lulu8879/agent-template.git /tmp/agent-template && rsync -a --exclude README.md --exclude .git /tmp/agent-template/ ./ && rm -rf /tmp/agent-template
    ```
 
 2. Add the local files to the project's `.gitignore`:
@@ -89,12 +89,12 @@ If the project already has an `AGENTS.md`, move its content into the project sec
 
 ## Setup prompt
 
-Instead of the steps above, you can paste this into any agent (Claude Code, Codex, Cursor, Copilot, Gemini CLI, Command Code) from the project root. Replace `<path-to-agent-template>` first.
+Instead of the steps above, you can paste this into any agent (Claude Code, Codex, Cursor, Copilot, Gemini CLI, Command Code) from the project root.
 
 ```text
-Set up the agent template from <path-to-agent-template> in this project. Read its README.md first.
+Set up the agent template from https://github.com/lulu8879/agent-template in this project. Read its README.md first.
 
-1. Copy every file except README.md and .git into the project root, keeping symlinks as symlinks (e.g. rsync -a). Ask before overwriting any existing file. If the project already has an AGENTS.md, merge its content into the project section instead.
+1. Clone it to a temporary folder outside this project (git clone --depth 1 -c core.symlinks=true). Copy every file except README.md and .git into the project root, keeping symlinks as symlinks (e.g. rsync -a), then delete the temporary clone. Ask before overwriting any existing file. If the project already has an AGENTS.md, merge its content into the project section instead.
 2. Add AGENTS.local.md and CLAUDE.local.md to .gitignore.
 3. Detect the stack: CodeIgniter 3 (application/ and system/), Laravel (artisan), Vue/Inertia (package.json). For each stack the project doesn't use, delete its file in .agents/rules/, its three symlinks, its import line in GEMINI.md, and its row in the AGENTS.md table.
 4. Fill in the TODO sections at the top of AGENTS.md from what you find in the repo. Write only facts you verified.
