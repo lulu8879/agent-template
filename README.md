@@ -8,7 +8,7 @@ Shared instructions for AI coding agents (Claude Code, Codex, Cursor, Copilot, G
 
 | File | Purpose |
 | --- | --- |
-| `AGENTS.md` | Project section (fill in) + team rules: ask first, protect the database, coding guidelines, git, language |
+| `AGENTS.md` | Project section (fill in) + team rules: ask when unsure, protect the database, coding guidelines, git, language |
 | `CLAUDE.md` | `@AGENTS.md` import, so Claude Code reads the same rules |
 | `AGENTS.local.md` | Your machine only: DDEV/Laragon/Herd commands, local URL, DB backup command |
 | `CLAUDE.local.md` | `@AGENTS.local.md` import for Claude Code |

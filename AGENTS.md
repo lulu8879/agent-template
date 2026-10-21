@@ -12,9 +12,9 @@
 
 <!-- ===== Team rules: maintained in the agent template. Edit them there, not per project. ===== -->
 
-## Ask first
+## Ask when unsure
 
-When a task or a plan leaves you unsure about requirements, scope, expected behavior, or approach, stop and ask before writing code or finalizing the plan.
+Ask any question if you are unsure what to do, whether you just got a task or are making a plan. Ask before writing code or finalizing the plan.
 
 - Ask everything in one message: numbered questions, each with the option you recommend.
 - Also ask before adding a Composer/npm dependency or running anything that drops or overwrites data.
