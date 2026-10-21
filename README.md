@@ -87,6 +87,24 @@ git clone -c core.symlinks=true <repo-url>
 
 If the project already has an `AGENTS.md`, move its content into the project section instead of overwriting it.
 
+## Setup prompt
+
+Instead of the steps above, you can paste this into any agent (Claude Code, Codex, Cursor, Copilot, Gemini CLI, Command Code) from the project root. Replace `<path-to-agent-template>` first.
+
+```text
+Set up the agent template from <path-to-agent-template> in this project. Read its README.md first.
+
+1. Copy every file except README.md and .git into the project root, keeping symlinks as symlinks (e.g. rsync -a). Ask before overwriting any existing file. If the project already has an AGENTS.md, merge its content into the project section instead.
+2. Add AGENTS.local.md and CLAUDE.local.md to .gitignore.
+3. Detect the stack: CodeIgniter 3 (application/ and system/), Laravel (artisan), Vue/Inertia (package.json). For each stack the project doesn't use, delete its file in .agents/rules/, its three symlinks, its import line in GEMINI.md, and its row in the AGENTS.md table.
+4. Fill in the TODO sections at the top of AGENTS.md from what you find in the repo. Write only facts you verified.
+5. Fill in AGENTS.local.md for this machine: DDEV or not, local URL, DB backup command.
+6. Laravel: check whether tests could use the dev database (phpunit.xml, .env.testing). If they could, tell me; don't change it yet.
+7. Summarize what you changed. Don't commit.
+
+Ask me if anything is unclear.
+```
+
 ## Notes
 
 - Team rules live below the "Team rules" comment in `AGENTS.md`. Change them here, then copy them to projects; don't edit them per project.
