@@ -4,6 +4,16 @@ Shared instructions for AI coding agents (Claude Code, Codex, Cursor, Copilot, G
 
 `AGENTS.md` is the single source of truth. Every other file either imports it or adds rules for one stack or one machine.
 
+## Contents
+
+- [Files](#files)
+- [Stack rules](#stack-rules)
+- [Supported agents](#supported-agents)
+  - [Windows](#windows)
+- [Use it in a project](#use-it-in-a-project)
+- [Setup prompt](#setup-prompt)
+- [Notes](#notes)
+
 ## Files
 
 | File | Purpose |
