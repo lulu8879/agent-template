@@ -1,0 +1,9 @@
+{
+    "preset": "laravel",
+    "rules": {
+        "ordered_imports": false,
+        "no_extra_blank_lines": {
+            "tokens": ["extra", "throw"]
+        }
+    }
+}
