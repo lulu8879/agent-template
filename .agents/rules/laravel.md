@@ -12,11 +12,12 @@ paths:
 globs: app/**/*.php,bootstrap/app.php,config/**/*.php,database/**/*.php,routes/**/*.php,tests/**/*.php,resources/views/**/*.blade.php,phpunit.xml
 alwaysApply: false
 applyTo: "app/**/*.php,bootstrap/app.php,config/**/*.php,database/**/*.php,routes/**/*.php,tests/**/*.php,resources/views/**/*.blade.php,phpunit.xml"
+trigger: glob
 ---
 
 # Laravel
 
-- Versions differ per repo (9–13). Check `laravel/framework` in `composer.json` and follow that version's structure: 11+ registers middleware, exceptions, and routes in `bootstrap/app.php`; 10 and older use `app/Http/Kernel.php` and `app/Exceptions/Handler.php`.
+- Versions differ per repo (9–13); `laravel/framework` in `composer.json` is the source of truth. Version-specific rules are in `laravel-9-10.md` or `laravel-13.md`, whichever this project has.
 - Write PHP for the minimum version in `composer.json` (`require.php`), not the newer PHP the dev environment runs.
 - Create classes with `php artisan make:*` (migration, model, controller, request, …).
 - Never edit a migration that may have run; add a new one.
