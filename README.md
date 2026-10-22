@@ -1,6 +1,6 @@
 # Agent Template
 
-Shared instructions for AI coding agents (Claude Code, Codex, Cursor, Copilot, Gemini CLI, Antigravity, Command Code) in our CodeIgniter 3 and Laravel (Blade + Vue/Inertia) projects.
+Shared instructions for AI coding agents (Claude Code, Codex, Cursor, Copilot, Gemini CLI, Antigravity, OpenCode, Command Code) in our CodeIgniter 3 and Laravel (Blade + Vue/Inertia) projects.
 
 `AGENTS.md` is the single source of truth. Every other file either imports it or adds rules for one stack or one machine.
 
@@ -37,6 +37,7 @@ Shared instructions for AI coding agents (Claude Code, Codex, Cursor, Copilot, G
 | `.github/instructions/*.instructions.md` | Symlinks to `.agents/rules/` for Copilot |
 | `GEMINI.md` | Imports `.agents/rules/*.md` for Gemini CLI |
 | `.gemini/settings.json` | Makes Gemini CLI read `AGENTS.md`, `AGENTS.local.md`, and `GEMINI.md` |
+| `opencode.json` | OpenCode: loads `AGENTS.local.md` and `.agents/rules/*.md`, asks before `git push` |
 
 ## Stack rules
 
@@ -60,12 +61,13 @@ When you change a rule's file patterns, update `paths`, `globs`, and `applyTo`. 
 | VS Code / Copilot | `AGENTS.md` (`chat.useAgentsMdFile`, on by default in recent versions) | `.github/instructions/` symlinks, applied to matching files | Via the `AGENTS.md` table | Turn the setting on if your version has it off |
 | Gemini CLI | `AGENTS.md`, via `.gemini/settings.json` | `GEMINI.md` imports, always loaded | Loaded via `.gemini/settings.json` | On older versions, use `"contextFileName": [...]` instead of `context.fileName` |
 | Antigravity | `AGENTS.md`, natively | `.agents/rules/`, natively (`trigger: glob`), loaded when matching files are touched | Via the `AGENTS.md` table | None |
+| OpenCode | `AGENTS.md`, natively | `opencode.json` `instructions`, always loaded (no file-pattern scoping) | `opencode.json` `instructions` | None |
 | Codex | `AGENTS.md`, natively | Via the `AGENTS.md` table | Via the `AGENTS.md` table | None |
 | Command Code | Not confirmed | Via the `AGENTS.md` table | Via the `AGENTS.md` table | If it doesn't pick up `AGENTS.md`, point its instruction file at it |
 
 Codex and Command Code have no rules folder of their own, so they follow the "More instructions" table at the end of `AGENTS.md`.
 
-Skills live in `.agents/skills/`. Codex, Cursor, Copilot, and Antigravity read that folder natively; Claude Code reads the `.claude/skills/` symlink. Cursor and Copilot also read `.claude/skills/`, so they may list a skill twice.
+Skills live in `.agents/skills/`. Codex, Cursor, Copilot, Antigravity, and OpenCode read that folder natively; Claude Code reads the `.claude/skills/` symlink. Cursor, Copilot, and OpenCode also read `.claude/skills/`, so they may list a skill twice.
 
 ### Windows
 
@@ -102,7 +104,7 @@ git clone -c core.symlinks=true <repo-url>
    rm .agents/rules/vue.md .claude/rules/vue.md .cursor/rules/vue.mdc .github/instructions/vue.instructions.md
    ```
 
-   If the project already has a `pint.json`, add the template's two rules to it instead of replacing it.
+   If the project already has a `pint.json` or `opencode.json`, merge the template's settings into it instead of replacing it.
 4. Fill in the TODO sections at the top of `AGENTS.md` (project line, commands, project rules).
 5. Rewrite `AGENTS.local.md` for your machine. Not on DDEV? The comment at its top has a non-DDEV example.
 6. Laravel: make sure tests can't hit the dev database. Either `phpunit.xml` uses sqlite `:memory:`, or `.env.testing` (a copy of `.env`) has its own `DB_DATABASE`.
@@ -112,17 +114,18 @@ If the project already has an `AGENTS.md`, move its content into the project sec
 
 ## Setup prompt
 
-Instead of the steps above, you can paste this into any agent (Claude Code, Codex, Cursor, Copilot, Gemini CLI, Antigravity, Command Code) from the project root.
+Instead of the steps above, you can paste this into any agent (Claude Code, Codex, Cursor, Copilot, Gemini CLI, Antigravity, OpenCode, Command Code) from the project root.
 
 ```text
 Set up the agent template from https://github.com/lulu8879/agent-template in this project. Read its README.md first.
 
-1. Clone it to a temporary folder outside this project (git clone --depth 1 -c core.symlinks=true). Copy every file except README.md, scripts/, and .git into the project root, keeping symlinks as symlinks (e.g. rsync -a), then delete the temporary clone. Ask before overwriting any existing file. If the project already has an AGENTS.md, merge its content into the project section instead. If it already has a pint.json, add the template's two rules to it instead.
+1. Clone it to a temporary folder outside this project (git clone --depth 1 -c core.symlinks=true). Copy every file except README.md, scripts/, and .git into the project root, keeping symlinks as symlinks (e.g. rsync -a), then delete the temporary clone. Ask before overwriting any existing file. If the project already has an AGENTS.md, merge its content into the project section instead. If it already has a pint.json or opencode.json, merge the template's settings into it instead.
 2. Ask me which agents to set up: (a) AGENTS.* only (default: no agent-specific files), (b) all agents, (c) only the agent running this setup, or (d) a list I choose. If I don't pick, use (a). Always keep AGENTS.md, AGENTS.local.md, .agents/rules/, and .agents/skills/. For each agent not chosen, delete its files:
    - Claude Code: CLAUDE.md, CLAUDE.local.md, .claude/settings.json, .claude/rules/, .claude/skills/
    - Cursor: .cursor/rules/
    - Copilot: .github/instructions/
    - Gemini CLI: GEMINI.md, .gemini/settings.json
+   - OpenCode: opencode.json
    Delete only the files the template added; keep anything the project already had in those folders.
    - Antigravity, Codex, Command Code: no files of their own (they read AGENTS.md; Antigravity also reads .agents/rules/, and Antigravity and Codex read .agents/skills/)
    Then update the first line of the "More instructions" section in AGENTS.md so it names only the kept agents that load rules automatically. With (a), only Antigravity does: change it to "Antigravity loads these automatically. Other agents: read the matching file first."
