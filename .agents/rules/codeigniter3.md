@@ -5,6 +5,7 @@ paths:
 globs: application/**/*.php
 alwaysApply: false
 applyTo: "application/**/*.php"
+trigger: glob
 ---
 
 # CodeIgniter 3
