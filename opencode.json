@@ -2,6 +2,10 @@
   "$schema": "https://opencode.ai/config.json",
   "instructions": ["AGENTS.local.md", ".agents/rules/*.md"],
   "permission": {
+    "skill": {
+      "*": "allow",
+      "refactor-bloated-code": "ask"
+    },
     "shell": {
       "*": "allow",
       "git push": "ask",
