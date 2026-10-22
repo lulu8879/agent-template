@@ -37,7 +37,7 @@ Shared instructions for AI coding agents (Claude Code, Codex, Cursor, Copilot, G
 | `.github/instructions/*.instructions.md` | Symlinks to `.agents/rules/` for Copilot |
 | `GEMINI.md` | Imports `.agents/rules/*.md` for Gemini CLI |
 | `.gemini/settings.json` | Makes Gemini CLI read `AGENTS.md`, `AGENTS.local.md`, and `GEMINI.md` |
-| `opencode.json` | OpenCode: loads `AGENTS.local.md` and `.agents/rules/*.md`, asks before `git push` |
+| `opencode.json` | OpenCode: loads `AGENTS.local.md` and `.agents/rules/*.md`, asks before `git push` and before the model loads `refactor-bloated-code` |
 
 ## Stack rules
 
@@ -67,7 +67,7 @@ When you change a rule's file patterns, update `paths`, `globs`, and `applyTo`. 
 
 Codex and Command Code have no rules folder of their own, so they follow the "More instructions" table at the end of `AGENTS.md`.
 
-Skills live in `.agents/skills/`. Codex, Cursor, Copilot, Antigravity, and OpenCode read that folder natively; Claude Code reads the `.claude/skills/` symlink. Cursor, Copilot, and OpenCode also read `.claude/skills/`, so they may list a skill twice.
+Skills live in `.agents/skills/`. Codex, Cursor, Copilot, Antigravity, and OpenCode read that folder natively; Claude Code reads the `.claude/skills/` symlink. Cursor and Copilot also read `.claude/skills/`, so they may list a skill twice; OpenCode merges skills with the same name.
 
 ### Windows
 
