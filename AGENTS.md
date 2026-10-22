@@ -106,7 +106,7 @@ Write identifiers, comments, and commit messages in English. User-facing text st
 
 ## More instructions
 
-Claude Code, Cursor, Copilot, Gemini CLI, and Antigravity load these automatically. Other agents: read the matching file first.
+Claude Code, Cursor, Copilot, Gemini CLI, Antigravity, and OpenCode load these automatically. Other agents: read the matching file first.
 
 | When | Read |
 | --- | --- |
