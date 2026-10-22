@@ -31,7 +31,6 @@ Shared instructions for AI coding agents (Claude Code, Codex, Cursor, Copilot, G
 | `.agents/rules/vue.md` | Vue 3 + Inertia rules + team frontend style |
 | `.agents/skills/refactor-bloated-code/` | Laravel skill, run on request (`/refactor-bloated-code`): splits a bloated controller into Form Requests, Repositories, and Services behind Contracts |
 | `.claude/skills/refactor-bloated-code` | Symlink to the skill for Claude Code |
-| `pint.json` | Laravel: stops Pint from re-sorting imports and removing the blank lines between import groups, so it doesn't undo `laravel-style.md` |
 | `.claude/rules/*.md` | Symlinks to `.agents/rules/` for Claude Code |
 | `.cursor/rules/*.mdc` | Symlinks to `.agents/rules/` for Cursor |
 | `.github/instructions/*.instructions.md` | Symlinks to `.agents/rules/` for Copilot |
@@ -92,7 +91,7 @@ git clone -c core.symlinks=true <repo-url>
    CLAUDE.local.md
    ```
 
-3. Delete the stacks the project doesn't use. The Laravel stack is `laravel`, `laravel-style`, `laravel-9-10`, and `laravel-13`, plus `pint.json` and the `refactor-bloated-code` skill (`.agents/skills/` folder and its `.claude/skills/` symlink).
+3. Delete the stacks the project doesn't use. The Laravel stack is `laravel`, `laravel-style`, `laravel-9-10`, and `laravel-13`, plus the `refactor-bloated-code` skill (`.agents/skills/` folder and its `.claude/skills/` symlink).
    - CodeIgniter 3: remove the Laravel stack and `vue`.
    - Laravel + Blade: remove `codeigniter3` and `vue`.
    - Laravel + Vue/Inertia: remove `codeigniter3`.
@@ -104,7 +103,7 @@ git clone -c core.symlinks=true <repo-url>
    rm .agents/rules/vue.md .claude/rules/vue.md .cursor/rules/vue.mdc .github/instructions/vue.instructions.md
    ```
 
-   If the project already has a `pint.json` or `opencode.json`, merge the template's settings into it instead of replacing it.
+   If the project already has an `opencode.json`, merge the template's settings into it instead of replacing it.
 4. Fill in the TODO sections at the top of `AGENTS.md` (project line, commands, project rules).
 5. Rewrite `AGENTS.local.md` for your machine. Not on DDEV? The comment at its top has a non-DDEV example.
 6. Laravel: make sure tests can't hit the dev database. Either `phpunit.xml` uses sqlite `:memory:`, or `.env.testing` (a copy of `.env`) has its own `DB_DATABASE`.
@@ -119,7 +118,7 @@ Instead of the steps above, you can paste this into any agent (Claude Code, Code
 ```text
 Set up the agent template from https://github.com/lulu8879/agent-template in this project. Read its README.md first.
 
-1. Clone it to a temporary folder outside this project (git clone --depth 1 -c core.symlinks=true). Copy every file except README.md, scripts/, and .git into the project root, keeping symlinks as symlinks (e.g. rsync -a), then delete the temporary clone. Ask before overwriting any existing file. If the project already has an AGENTS.md, merge its content into the project section instead. If it already has a pint.json or opencode.json, merge the template's settings into it instead.
+1. Clone it to a temporary folder outside this project (git clone --depth 1 -c core.symlinks=true). Copy every file except README.md, scripts/, and .git into the project root, keeping symlinks as symlinks (e.g. rsync -a), then delete the temporary clone. Ask before overwriting any existing file. If the project already has an AGENTS.md, merge its content into the project section instead. If it already has an opencode.json, merge the template's settings into it instead.
 2. Ask me which agents to set up: (a) AGENTS.* only (default: no agent-specific files), (b) all agents, (c) only the agent running this setup, or (d) a list I choose. If I don't pick, use (a). Always keep AGENTS.md, AGENTS.local.md, .agents/rules/, and .agents/skills/. For each agent not chosen, delete its files:
    - Claude Code: CLAUDE.md, CLAUDE.local.md, .claude/settings.json, .claude/rules/, .claude/skills/
    - Cursor: .cursor/rules/
@@ -130,7 +129,7 @@ Set up the agent template from https://github.com/lulu8879/agent-template in thi
    - Antigravity, Codex, Command Code: no files of their own (they read AGENTS.md; Antigravity also reads .agents/rules/, and Antigravity and Codex read .agents/skills/)
    Then update the first line of the "More instructions" section in AGENTS.md so it names only the kept agents that load rules automatically. With (a), only Antigravity does: change it to "Antigravity loads these automatically. Other agents: read the matching file first."
 3. Add AGENTS.local.md to .gitignore, and CLAUDE.local.md too if Claude Code is kept.
-4. Detect the stack: CodeIgniter 3 (application/ and system/), Laravel (artisan), Vue/Inertia (package.json). For each stack the project doesn't use, delete its file in .agents/rules/, its remaining symlinks, its import line in GEMINI.md (if kept), and its row in the AGENTS.md table. The Laravel stack is laravel, laravel-style, laravel-9-10, and laravel-13, plus pint.json and the refactor-bloated-code skill (.agents/skills/ and its .claude/skills/ symlink).
+4. Detect the stack: CodeIgniter 3 (application/ and system/), Laravel (artisan), Vue/Inertia (package.json). For each stack the project doesn't use, delete its file in .agents/rules/, its remaining symlinks, its import line in GEMINI.md (if kept), and its row in the AGENTS.md table. The Laravel stack is laravel, laravel-style, laravel-9-10, and laravel-13, plus the refactor-bloated-code skill (.agents/skills/ and its .claude/skills/ symlink).
    Laravel: read laravel/framework in composer.json. Keep laravel-9-10 for 9–10 or laravel-13 for 13, and delete the other the same way. For any other version, stop and ask me.
 5. Fill in the TODO sections at the top of AGENTS.md from what you find in the repo. Write only facts you verified.
 6. Fill in AGENTS.local.md for this machine: DDEV or not, local URL, DB backup command.
@@ -144,6 +143,7 @@ Ask me if anything is unclear.
 
 - After adding, renaming, or deleting a rule in `.agents/rules/` or a skill in `.agents/skills/`, run `scripts/link.sh`. It creates the missing per-tool symlinks, removes dangling ones, and reports rules missing from `GEMINI.md` or the `AGENTS.md` table. `scripts/link.sh --check` only reports, and exits 1 if anything is wrong. On Windows, run it from WSL, or from Git Bash with `MSYS=winsymlinks:nativestrict` (Developer Mode on); otherwise Git Bash copies files instead of linking them.
 - Team rules live below the "Team rules" comment in `AGENTS.md`. Change them here, then copy them to projects; don't edit them per project.
+- Agents run Pint with the project's own settings. Pint's default preset sorts imports alphabetically and removes blank lines between them, so in projects without a `pint.json` it overrides the import grouping in `laravel-style.md`.
 - After upgrading a project's Laravel version, swap its version file (`laravel-9-10` ↔ `laravel-13`).
 - Laravel and Vue code style come from the team's [ai-agents-md](https://gitlab.com/tataadin/ai-agents-md) coding standards.
 - Coding guidelines come from [forrestchang/andrej-karpathy-skills](https://github.com/forrestchang/andrej-karpathy-skills) (MIT).
