@@ -77,10 +77,10 @@ git clone -c core.symlinks=true <repo-url>
 
 ## Use it in a project
 
-1. From the project root, clone the template to a temporary folder, copy everything except `README.md` and `.git`, then remove the clone:
+1. From the project root, clone the template to a temporary folder, copy everything except `README.md`, `scripts/`, and `.git`, then remove the clone:
 
    ```bash
-   git clone --depth 1 -c core.symlinks=true https://github.com/lulu8879/agent-template.git /tmp/agent-template && rsync -a --exclude README.md --exclude .git /tmp/agent-template/ ./ && rm -rf /tmp/agent-template
+   git clone --depth 1 -c core.symlinks=true https://github.com/lulu8879/agent-template.git /tmp/agent-template && rsync -a --exclude README.md --exclude scripts --exclude .git /tmp/agent-template/ ./ && rm -rf /tmp/agent-template
    ```
 
 2. Add the local files to the project's `.gitignore`:
@@ -117,7 +117,7 @@ Instead of the steps above, you can paste this into any agent (Claude Code, Code
 ```text
 Set up the agent template from https://github.com/lulu8879/agent-template in this project. Read its README.md first.
 
-1. Clone it to a temporary folder outside this project (git clone --depth 1 -c core.symlinks=true). Copy every file except README.md and .git into the project root, keeping symlinks as symlinks (e.g. rsync -a), then delete the temporary clone. Ask before overwriting any existing file. If the project already has an AGENTS.md, merge its content into the project section instead. If it already has a pint.json, add the template's two rules to it instead.
+1. Clone it to a temporary folder outside this project (git clone --depth 1 -c core.symlinks=true). Copy every file except README.md, scripts/, and .git into the project root, keeping symlinks as symlinks (e.g. rsync -a), then delete the temporary clone. Ask before overwriting any existing file. If the project already has an AGENTS.md, merge its content into the project section instead. If it already has a pint.json, add the template's two rules to it instead.
 2. Ask me which agents to set up: (a) AGENTS.* only (default: no agent-specific files), (b) all agents, (c) only the agent running this setup, or (d) a list I choose. If I don't pick, use (a). Always keep AGENTS.md, AGENTS.local.md, .agents/rules/, and .agents/skills/. For each agent not chosen, delete its files:
    - Claude Code: CLAUDE.md, CLAUDE.local.md, .claude/settings.json, .claude/rules/, .claude/skills/
    - Cursor: .cursor/rules/
@@ -139,6 +139,7 @@ Ask me if anything is unclear.
 
 ## Notes
 
+- After adding, renaming, or deleting a rule in `.agents/rules/` or a skill in `.agents/skills/`, run `scripts/link.sh`. It creates the missing per-tool symlinks, removes dangling ones, and reports rules missing from `GEMINI.md` or the `AGENTS.md` table. `scripts/link.sh --check` only reports, and exits 1 if anything is wrong. On Windows, run it from WSL, or from Git Bash with `MSYS=winsymlinks:nativestrict` (Developer Mode on); otherwise Git Bash copies files instead of linking them.
 - Team rules live below the "Team rules" comment in `AGENTS.md`. Change them here, then copy them to projects; don't edit them per project.
 - After upgrading a project's Laravel version, swap its version file (`laravel-9-10` ↔ `laravel-13`).
 - Laravel and Vue code style come from the team's [ai-agents-md](https://gitlab.com/tataadin/ai-agents-md) coding standards.
