@@ -114,3 +114,4 @@ Claude Code, Cursor, Copilot, Gemini CLI, and Antigravity load these automatical
 | Editing `application/**` (CodeIgniter 3) | `.agents/rules/codeigniter3.md` |
 | Editing `app/`, `routes/`, `config/`, `database/`, `tests/`, `resources/views/`, or running tests (Laravel + Blade) | `.agents/rules/laravel.md`, `.agents/rules/laravel-style.md`, and `.agents/rules/laravel-9-10.md` or `.agents/rules/laravel-13.md` (whichever exists) |
 | Editing `resources/js/**` (Vue + Inertia) | `.agents/rules/vue.md` |
+| The user asks to refactor a bloated Laravel controller (`/refactor-bloated-code`) | `.agents/skills/refactor-bloated-code/SKILL.md` |
