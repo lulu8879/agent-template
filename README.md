@@ -28,7 +28,7 @@ Shared instructions for AI coding agents (Claude Code, Codex, Cursor, Copilot, G
 | `.agents/rules/laravel-style.md` | Team Laravel code style: validation, models, imports, routes, method names |
 | `.agents/rules/laravel-9-10.md` | Laravel 9–10 only: `Kernel.php`, `$casts`/`$fillable` properties |
 | `.agents/rules/laravel-13.md` | Laravel 13 only: `bootstrap/app.php`, `#[Fillable]`/`#[Hidden]`, `casts()` |
-| `.agents/rules/vue.md` | Vue 3 + Inertia rules + team frontend style |
+| `.agents/rules/vue.md` | Vue 3 + Inertia rules + team frontend style: what goes in Utils, Composables, and Pinia Stores; component reuse; import order |
 | `.agents/skills/refactor-bloated-code/` | Laravel skill, run on request (`/refactor-bloated-code`): splits a bloated controller into Form Requests, Repositories, and Services behind Contracts |
 | `.claude/skills/refactor-bloated-code` | Symlink to the skill for Claude Code |
 | `.claude/rules/*.md` | Symlinks to `.agents/rules/` for Claude Code |
