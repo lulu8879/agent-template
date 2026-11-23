@@ -1,0 +1,10 @@
+{
+  "attribution": {
+    "commit": ""
+  },
+  "permissions": {
+    "ask": [
+      "Shell(git push:*)"
+    ]
+  }
+}

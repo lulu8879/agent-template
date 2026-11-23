@@ -1,1 +1,0 @@
-../../.agents/rules/laravel-9-10.md

@@ -1,0 +1,6 @@
+prefix_rule(
+    pattern = ["git", "push"],
+    decision = "prompt",
+    justification = "Push only after the user says yes",
+    match = ["git push", "git push origin main"],
+)

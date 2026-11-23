@@ -1,1 +1,0 @@
-../../.agents/rules/codeigniter3.md
