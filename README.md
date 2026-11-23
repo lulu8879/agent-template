@@ -81,7 +81,7 @@ Start the tech lead:
 
 You can also call a specialist directly, e.g. "use the security-engineer to review my changes" (Claude Code, Antigravity) or `@security-engineer` (OpenCode). Codex, Cursor, Copilot, and Gemini CLI don't load these agents.
 
-Each tool needs its own frontmatter, so every agent has three copies instead of symlinks. The body is the same in all three (it refers to `AGENTS.md`, `AGENTS.local.md`, and `.agents/rules/`); only the tech lead's "Start agents with the … tool" line differs. Change an agent in all three folders:
+Each tool needs its own frontmatter, so every agent has three copies instead of symlinks. The body is the same in all three (it refers to `AGENTS.md`, `AGENTS.local.md`, and `.agents/rules/`); only the tech lead's "Start agents with the … tool" line differs. Change an agent in all three folders, then run `scripts/link.sh --check` to catch a missed copy:
 
 | Tool | Location | Frontmatter | Tech lead starts agents with |
 | --- | --- | --- | --- |
@@ -192,7 +192,7 @@ Ask me if anything is unclear.
 ## Notes
 
 - After adding, renaming, or deleting a rule in `.agents/rules/` or a skill in `.agents/skills/`, run `scripts/link.sh`. It creates the missing per-tool symlinks, removes dangling ones, and reports rules missing from `GEMINI.md` or the `AGENTS.md` table. `scripts/link.sh --check` only reports, and exits 1 if anything is wrong. On Windows, run it from WSL, or from Git Bash with `MSYS=winsymlinks:nativestrict` (Developer Mode on); otherwise Git Bash copies files instead of linking them.
-- `scripts/link.sh` doesn't touch agents. When you change one, edit its copy in `.claude/agents/`, `.opencode/agents/`, and `.agents/agents/` (see [Agent team](#agent-team)).
+- `scripts/link.sh` doesn't change agents. When you change one, edit its copy in `.claude/agents/`, `.opencode/agents/`, and `.agents/agents/` (see [Agent team](#agent-team)). The script reports an agent missing from a kept folder, or whose body differs between copies (frontmatter and the tech lead's "Start agents with the … tool" line are ignored).
 - Team rules live below the "Team rules" comment in `AGENTS.md`. Change them here, then copy them to projects; don't edit them per project.
 - Agents run Pint with the project's own settings. Pint's default preset sorts imports alphabetically and removes blank lines between them, so in projects without a `pint.json` it overrides the import grouping in `laravel-style.md`.
 - After upgrading a project's Laravel version, swap its version file (`laravel-9-10` ↔ `laravel-13`).

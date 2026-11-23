@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Links every rule in .agents/rules/ and skill in .agents/skills/ into each tool's folder,
-# removes links whose target is gone, and reports rules missing from GEMINI.md or AGENTS.md.
+# removes links whose target is gone, reports rules missing from GEMINI.md or AGENTS.md,
+# and reports agents whose copies in .agents/, .claude/, .opencode/ are missing or differ.
 # Usage: scripts/link.sh [--check]   (--check reports problems without changing anything)
 set -euo pipefail
 shopt -s nullglob
@@ -70,6 +71,33 @@ done
 
 for dir in .claude/rules .cursor/rules .github/instructions .claude/skills; do
   prune "$dir"
+done
+
+# Agents keep one copy per tool with different frontmatter. Their bodies must match,
+# except the tech lead's "Start agents with the … tool" line.
+agent_body() {
+  awk 'c >= 2 { print; next } /^---$/ { c++ }' "$1" | grep -v '^Start agents with the '
+}
+
+agent_dirs=()
+for dir in .agents/agents .claude/agents .opencode/agents; do
+  if [[ -d $dir ]]; then agent_dirs+=("$dir"); fi
+done
+agent_names=$(for dir in "${agent_dirs[@]}"; do for f in "$dir"/*.md; do basename "$f" .md; done; done | sort -u)
+for name in $agent_names; do
+  ref=""
+  for dir in "${agent_dirs[@]}"; do
+    file="$dir/$name.md"
+    if [[ ! -f $file ]]; then
+      echo "agent missing: $file"
+      problems=$((problems + 1))
+    elif [[ -z $ref ]]; then
+      ref=$file
+    elif ! diff -q <(agent_body "$ref") <(agent_body "$file") >/dev/null; then
+      echo "agent body differs: $file vs $ref"
+      problems=$((problems + 1))
+    fi
+  done
 done
 
 if $claude_changed; then
