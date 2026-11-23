@@ -115,3 +115,4 @@ Claude Code, Cursor, Copilot, Gemini CLI, Antigravity, and OpenCode load these a
 | Editing `app/`, `routes/`, `config/`, `database/`, `tests/`, `resources/views/`, or running tests (Laravel + Blade) | `.agents/rules/laravel.md`, `.agents/rules/laravel-style.md`, and `.agents/rules/laravel-9-10.md` or `.agents/rules/laravel-13.md` (whichever exists) |
 | Editing `resources/js/**` (Vue + Inertia) | `.agents/rules/vue.md` |
 | The user asks to refactor a bloated Laravel controller (`/refactor-bloated-code`) | `.agents/skills/refactor-bloated-code/SKILL.md` |
+| Planning a multi-step task or splitting it across roles (Claude Code: `/tech-lead`; OpenCode: press Tab to switch to `tech-lead`; Antigravity: pick `tech-lead` in the agent picker) | `.agents/agents/tech-lead.md` and the specialist agents beside it |
