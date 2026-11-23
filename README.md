@@ -24,7 +24,6 @@ Each top-level folder is a ready-to-copy setup for one agent. Pick the folder fo
 | OpenCode | `opencode/` | `AGENTS.md` | `.agents/rules/`, always loaded via `opencode.json` | Loaded via `opencode.json` | `.agents/skills/` | `.opencode/agents/` |
 | Cursor | `cursor/` | `AGENTS.md` | `.cursor/rules/*.mdc`, attached when matching files are in context | Via the `AGENTS.md` table | `.agents/skills/` | `.cursor/agents/` + `tech-lead` skill |
 | VS Code / Copilot | `copilot/` | `AGENTS.md` | `.github/instructions/*.instructions.md` (`applyTo`), applied to matching files | Via the `AGENTS.md` table | `.github/skills/` | `.github/agents/*.agent.md` |
-| Gemini CLI | `gemini/` | `AGENTS.md` via `.gemini/settings.json` | `.agents/rules/`, always loaded via `GEMINI.md` imports | Loaded via `.gemini/settings.json` | `.agents/skills/` | `.gemini/agents/` + `tech-lead` skill |
 | Codex | `codex/` | `AGENTS.md` | `.agents/rules/`, via the `AGENTS.md` table | Via the `AGENTS.md` table | `.agents/skills/` | `.codex/agents/*.toml` + `tech-lead` skill |
 | Command Code | `commandcode/` | `AGENTS.md` | `.agents/rules/`, via the `AGENTS.md` table | Imported by `@AGENTS.local.md` in `AGENTS.md` | `.agents/skills/` | `.commandcode/agents/` + `tech-lead` skill |
 
@@ -52,7 +51,6 @@ Per-agent settings:
 | `claude/` | `.claude/settings.json` | No commit/PR attribution, asks before `git push` |
 | `claude/` | `.claude/skills/tech-lead/` | `/tech-lead <task>` runs the tech lead in the current conversation |
 | `opencode/` | `opencode.json` | Loads `AGENTS.local.md` and the rules, asks before `git push` and before the model loads the skill |
-| `gemini/` | `.gemini/settings.json`, `GEMINI.md` | Reads `AGENTS.md`, `AGENTS.local.md`, and `GEMINI.md`; `GEMINI.md` imports the stack rules |
 | `codex/` | `.codex/rules/default.rules` | Asks before `git push` (experimental; project must be trusted) |
 | `codex/` | `.agents/skills/*/agents/openai.yaml` | Skills run only when invoked with `$name` |
 | `commandcode/` | `.commandcode/settings.json` | No commit co-author trailer, asks before `git push` |
@@ -83,15 +81,14 @@ How each agent starts the tech lead, where it lives, and how models and read-onl
 | OpenCode | Tab to switch to `tech-lead` | `.opencode/agents/tech-lead.md` (`mode: primary`) | `anthropic/claude-opus-5-5` / `-sonnet-5-5` / `-haiku-5-5` | `permission.edit: deny` |
 | Copilot | Pick `tech-lead` in the agent picker | `.github/agents/tech-lead.agent.md` (`disable-model-invocation: true`) | The model you pick | `tools: ['read', 'search', 'execute', 'web']` |
 | Cursor | `/tech-lead` | `.agents/skills/tech-lead/SKILL.md` | `inherit` | `readonly: true` |
-| Gemini CLI | Ask for the tech-lead skill | `.agents/skills/tech-lead/SKILL.md` | `gemini-3-pro-preview` / `inherit` / `gemini-3-flash-preview` | `tools:` allowlist without `replace`/`write_file` |
 | Codex | `$tech-lead` | `.agents/skills/tech-lead/SKILL.md` | Session model | Instructions only |
 | Command Code | `/tech-lead` | `.agents/skills/tech-lead/SKILL.md` | Session model | `disallowedTools: edit_file, write_file` |
 
-Cursor, Gemini CLI, Codex, and Command Code can't make a custom agent the main session, and their subagents can't start other subagents. So the tech lead is a skill there: it runs in the main conversation and starts the nine specialists as subagents.
+Cursor, Codex, and Command Code can't make a custom agent the main session, and their subagents can't start other subagents. So the tech lead is a skill there: it runs in the main conversation and starts the nine specialists as subagents.
 
 Models follow one rule where the tool lets you pick: planning and review use the strongest model, writing code uses the mid model, read-only lookups use the fast model. Cursor, Copilot, Codex, and Command Code model IDs depend on your plan or provider, so their agents use the session model; add a `model` field if you want to pin one.
 
-You can also call a specialist directly, e.g. "use the security-engineer to review my changes", `@security-engineer` (OpenCode, Gemini CLI), or pick it in the agent picker (Copilot).
+You can also call a specialist directly, e.g. "use the security-engineer to review my changes", `@security-engineer` (OpenCode), or pick it in the agent picker (Copilot).
 
 ## Setup prompt
 
@@ -102,7 +99,7 @@ Set up the agent template from https://github.com/lulu8879/agent-template in thi
 
 1. Look first, change nothing yet. Detect the stack: CodeIgniter 3 (application/ and system/), Laravel (artisan; version from laravel/framework in composer.json), Vue/Inertia (package.json, resources/js/), Blade views (resources/views/). Note which AI tool you are running in.
 2. Ask me these in one message, numbered, each with the answer you recommend from step 1. Wait for my answers.
-   a. Which AI tool(s) will this project use? Recommend the one you are running in. Each maps to one folder: claude/, antigravity/, opencode/, cursor/, copilot/, gemini/, codex/, commandcode/.
+   a. Which AI tool(s) will this project use? Recommend the one you are running in. Each maps to one folder: claude/, antigravity/, opencode/, cursor/, copilot/, codex/, commandcode/.
    b. Which agents from the README "Agent team" should I install? List all ten with a one-line role each and mark the ones you recommend: tech-lead, software-architect, code-reviewer, security-engineer, research-analyst, backend-engineer, qa-engineer, support-engineer, and database-engineer for any CodeIgniter 3 or Laravel app; frontend-engineer only if the project has Vue/Inertia or Blade views. "None" is a valid answer.
 3. Clone the repo to a temporary folder outside this project. Copy the contents of each chosen folder (including dot-folders) into the project root, leaving out the agent files I didn't choose, then delete the temporary clone. Ask before overwriting any existing file. If the project already has an AGENTS.md or CLAUDE.md, merge its content into the project section instead. If it already has an opencode.json or another settings file, merge the settings into it instead. If two chosen folders both have AGENTS.md, keep one and merge the "More instructions" tables.
 4. If I left out any agents, keep the rest consistent in every chosen folder:
@@ -110,7 +107,7 @@ Set up the agent template from https://github.com/lulu8879/agent-template in thi
    - Without tech-lead: also delete the tech-lead skill (.claude/skills/tech-lead/ or .agents/skills/tech-lead/) and the tech-lead row in the "More instructions" table of AGENTS.md.
    - No agents at all: delete the empty agents folder.
 5. Add the local file (AGENTS.local.md, or CLAUDE.local.md for claude/) to .gitignore.
-6. Delete the rule files for stacks the project doesn't use, their rows in the "More instructions" table, and their import lines in GEMINI.md (gemini/). The Laravel stack is laravel, laravel-style, laravel-9-10, and laravel-13, plus the refactor-bloated-code skill.
+6. Delete the rule files for stacks the project doesn't use, and their rows in the "More instructions" table. The Laravel stack is laravel, laravel-style, laravel-9-10, and laravel-13, plus the refactor-bloated-code skill.
 7. Laravel: keep laravel-9-10 for 9–10 or laravel-13 for 13, and delete the other the same way. For any other version, stop and ask me.
 8. Fill in the TODO sections at the top of AGENTS.md (or CLAUDE.md) from what you find in the repo. Write only facts you verified.
 9. Fill in the local file for this machine: DDEV or not, local URL, DB backup command.
@@ -144,7 +141,7 @@ Ask me if anything is unclear.
 
 ## Editing the template
 
-Every folder has its own copy of each file, so a change has to be made in all eight folders. The body text is the same everywhere; only the frontmatter, the file format, and the paths inside the text differ.
+Every folder has its own copy of each file, so a change has to be made in all seven folders. The body text is the same everywhere; only the frontmatter, the file format, and the paths inside the text differ.
 
 Rules:
 
@@ -154,7 +151,7 @@ Rules:
 | `antigravity/` | `.agents/rules/<name>.md` | `trigger: glob`, `description`, `globs` (Antigravity drops a rule without a valid `trigger`) |
 | `cursor/` | `.cursor/rules/<name>.mdc` | `description`, `globs`, `alwaysApply: false` |
 | `copilot/` | `.github/instructions/<name>.instructions.md` | `description`, `applyTo` |
-| `opencode/`, `gemini/`, `codex/`, `commandcode/` | `.agents/rules/<name>.md` | None: loaded by `opencode.json`, `GEMINI.md`, or the `AGENTS.md` table |
+| `opencode/`, `codex/`, `commandcode/` | `.agents/rules/<name>.md` | None: loaded by `opencode.json` or the `AGENTS.md` table |
 
 Paths inside rule, skill, and agent text point to the folder's own rule location and extension, e.g. `.claude/rules/laravel.md`, `.cursor/rules/laravel.mdc`, `.github/instructions/laravel.instructions.md`.
 
@@ -167,18 +164,16 @@ Agents:
 | `opencode/` | `.opencode/agents/<name>.md` | `description`, `mode` (`primary` for `tech-lead`), `model` (`provider/model`), `permission` (`task` on `tech-lead`, `edit: deny` on read-only agents) |
 | `copilot/` | `.github/agents/<name>.agent.md` | `name`, `description`, `tools` (on `tech-lead` and read-only agents), `disable-model-invocation: true` on `tech-lead` |
 | `cursor/` | `.cursor/agents/<name>.md` | `name`, `description`, `model: inherit`, `readonly: true` on read-only agents |
-| `gemini/` | `.gemini/agents/<name>.md` | `name`, `description`, `kind: local`, `model`, `tools` allowlist on read-only agents |
 | `codex/` | `.codex/agents/<name>.toml` | `name`, `description`, `developer_instructions` (the body) |
 | `commandcode/` | `.commandcode/agents/<name>.md` | `name`, `description`, `tools: "*"`, `disallowedTools` on read-only agents |
 
-The tech lead's "Start agents with the … tool" line differs per tool. In `cursor/`, `gemini/`, `codex/`, and `commandcode/` the tech lead is `.agents/skills/tech-lead/SKILL.md` instead of an agent file.
+The tech lead's "Start agents with the … tool" line differs per tool. In `cursor/`, `codex/`, and `commandcode/` the tech lead is `.agents/skills/tech-lead/SKILL.md` instead of an agent file.
 
 `AGENTS.md` is the same in every folder except the "More instructions" section at the end. `CLAUDE.md` is `AGENTS.md` without that section, and it refers to `CLAUDE.local.md`.
 
 ## Notes
 
-- Copying several folders into one project: `antigravity/`, `opencode/`, `gemini/`, `codex/`, and `commandcode/` all use `.agents/rules/` and `.agents/skills/`. The rule and skill bodies are identical, so one copy is enough, but keep the frontmatter that each tool needs (Antigravity needs `trigger: glob`; Cursor and Command Code need `disable-model-invocation: true` on skills; Codex needs `agents/openai.yaml`).
-- Gemini CLI's docs say it was replaced by Antigravity CLI on June 18, 2026. `gemini/` still works for teams on Gemini CLI; new setups should use `antigravity/`.
+- Copying several folders into one project: `antigravity/`, `opencode/`, `codex/`, and `commandcode/` all use `.agents/rules/` and `.agents/skills/`. The rule and skill bodies are identical, so one copy is enough, but keep the frontmatter that each tool needs (Antigravity needs `trigger: glob`; Cursor and Command Code need `disable-model-invocation: true` on skills; Codex needs `agents/openai.yaml`).
 - Copilot asks before terminal commands by default. To make it always ask before `git push`, add `"chat.tools.terminal.autoApprove": { "git push": false }` to your VS Code User settings (Copilot ignores this in Workspace settings).
 - Codex reads only `AGENTS.md`, so it follows the "More instructions" table for `AGENTS.local.md` and the rules. Codex agent files can't set a sandbox, so read-only agents rely on their instructions.
 - Agents run Pint with the project's own settings. Pint's default preset sorts imports alphabetically and removes blank lines between them, so in projects without a `pint.json` it overrides the import grouping in `laravel-style`.
