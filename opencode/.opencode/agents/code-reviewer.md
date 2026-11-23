@@ -2,14 +2,25 @@
 description: "Reviews code changes in web projects against the plan, team rules, and correctness: bugs, edge cases, N+1 queries, missing tests, and over-engineering. Read-only; returns findings ranked by severity."
 mode: subagent
 model: anthropic/claude-opus-5-5
-permission:
-  edit: deny
-  bash:
-    "*": ask
-    "git status*": allow
-    "git diff*": allow
-    "git log*": allow
-    "git show*": allow
+permissions:
+  - action: edit
+    resource: "*"
+    effect: deny
+  - action: shell
+    resource: "*"
+    effect: ask
+  - action: shell
+    resource: "git status *"
+    effect: allow
+  - action: shell
+    resource: "git diff *"
+    effect: allow
+  - action: shell
+    resource: "git log *"
+    effect: allow
+  - action: shell
+    resource: "git show *"
+    effect: allow
 ---
 
 # Code Reviewer

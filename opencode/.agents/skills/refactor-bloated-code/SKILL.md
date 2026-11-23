@@ -1,9 +1,7 @@
 ---
 name: refactor-bloated-code
 description: Refactors a bloated Laravel controller into Form Requests, Repositories (heavy DB queries), and Services (3rd-party HTTP calls and non-CRUD logic), each behind a Contract interface. Use only when the user runs /refactor-bloated-code or explicitly asks for this refactor.
-metadata:
-  opencode/slash: "true"
-  opencode/autoinvoke: "false"
+disable-model-invocation: true
 ---
 
 # Refactor Bloated Code (Repositories, Services & Requests)

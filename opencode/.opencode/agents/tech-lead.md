@@ -2,18 +2,37 @@
 description: "Tech lead who runs a web-development task end to end: clarifies the request, gets a plan, delegates to the specialist agents, verifies their work, and reports. Main conversation only (start it with Tab to switch to the tech-lead agent); never run it as a subagent."
 mode: primary
 model: anthropic/claude-opus-5-5
-permission:
-  task:
-    "*": deny
-    software-architect: allow
-    backend-engineer: allow
-    frontend-engineer: allow
-    database-engineer: allow
-    qa-engineer: allow
-    support-engineer: allow
-    code-reviewer: allow
-    security-engineer: allow
-    research-analyst: allow
+permissions:
+  - action: subagent
+    resource: "*"
+    effect: deny
+  - action: subagent
+    resource: "software-architect"
+    effect: allow
+  - action: subagent
+    resource: "backend-engineer"
+    effect: allow
+  - action: subagent
+    resource: "frontend-engineer"
+    effect: allow
+  - action: subagent
+    resource: "database-engineer"
+    effect: allow
+  - action: subagent
+    resource: "qa-engineer"
+    effect: allow
+  - action: subagent
+    resource: "support-engineer"
+    effect: allow
+  - action: subagent
+    resource: "code-reviewer"
+    effect: allow
+  - action: subagent
+    resource: "security-engineer"
+    effect: allow
+  - action: subagent
+    resource: "research-analyst"
+    effect: allow
 ---
 
 # Tech Lead

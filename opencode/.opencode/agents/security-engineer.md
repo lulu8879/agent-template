@@ -2,14 +2,25 @@
 description: "Security review of web changes in Laravel, CodeIgniter 3, Vue, and Blade: authorization and IDOR, mass assignment, SQL injection, XSS, CSRF, file uploads, secrets, and data leaks. Read-only; reports only exploitable findings."
 mode: subagent
 model: anthropic/claude-opus-5-5
-permission:
-  edit: deny
-  bash:
-    "*": ask
-    "git status*": allow
-    "git diff*": allow
-    "git log*": allow
-    "git show*": allow
+permissions:
+  - action: edit
+    resource: "*"
+    effect: deny
+  - action: shell
+    resource: "*"
+    effect: ask
+  - action: shell
+    resource: "git status *"
+    effect: allow
+  - action: shell
+    resource: "git diff *"
+    effect: allow
+  - action: shell
+    resource: "git log *"
+    effect: allow
+  - action: shell
+    resource: "git show *"
+    effect: allow
 ---
 
 # Security Engineer

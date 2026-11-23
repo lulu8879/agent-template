@@ -2,14 +2,25 @@
 description: "Plans medium or large web changes before any code is written: explores the codebase, picks the simplest approach that fits existing patterns, and splits the work into tasks per specialist. Read-only."
 mode: subagent
 model: anthropic/claude-opus-5-5
-permission:
-  edit: deny
-  bash:
-    "*": ask
-    "git status*": allow
-    "git diff*": allow
-    "git log*": allow
-    "git show*": allow
+permissions:
+  - action: edit
+    resource: "*"
+    effect: deny
+  - action: shell
+    resource: "*"
+    effect: ask
+  - action: shell
+    resource: "git status *"
+    effect: allow
+  - action: shell
+    resource: "git diff *"
+    effect: allow
+  - action: shell
+    resource: "git log *"
+    effect: allow
+  - action: shell
+    resource: "git show *"
+    effect: allow
 ---
 
 # Software Architect

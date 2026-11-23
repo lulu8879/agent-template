@@ -77,14 +77,14 @@ How each agent starts the tech lead, where it lives, and how models and read-onl
 | Agent | Start the tech lead | Tech lead lives in | Models (plan & review / code / lookups) | Read-only agents |
 | --- | --- | --- | --- | --- |
 | Claude Code | `/tech-lead <task>`, or `claude --agent tech-lead` for the whole session | `.claude/agents/tech-lead.md` (+ skill that loads it) | `opus` / `sonnet` / `haiku` | `disallowedTools` |
-| Antigravity | Agent picker, `/agents`, or `agy --agent tech-lead` | `.agents/agents/tech-lead.md` (`mainAgent: true`) | `pro` / `inherit` / `flash` | Instructions only |
-| OpenCode | Tab to switch to `tech-lead` | `.opencode/agents/tech-lead.md` (`mode: primary`) | `anthropic/claude-opus-5-5` / `-sonnet-5-5` / `-haiku-5-5` | `permission.edit: deny` |
+| Antigravity | Agent picker or `/agents` | `.agents/agents/tech-lead.md` (`mainAgent: true`) | `pro` / `inherit` / `flash` | Instructions only |
+| OpenCode | Tab to switch to `tech-lead` | `.opencode/agents/tech-lead.md` (`mode: primary`) | `anthropic/claude-opus-5-5` / `-sonnet-5-5` / `-haiku-5-5` | `permissions`: `edit` deny |
 | Copilot | Pick `tech-lead` in the agent picker | `.github/agents/tech-lead.agent.md` (`disable-model-invocation: true`) | The model you pick | `tools: ['read', 'search', 'execute', 'web']` |
 | Cursor | `/tech-lead` | `.agents/skills/tech-lead/SKILL.md` | `inherit` | `readonly: true` |
 | Codex | `$tech-lead` | `.agents/skills/tech-lead/SKILL.md` | Session model | Instructions only |
 | Command Code | `/tech-lead` | `.agents/skills/tech-lead/SKILL.md` | Session model | `disallowedTools: edit_file, write_file` |
 
-Cursor, Codex, and Command Code can't make a custom agent the main session, and their subagents can't start other subagents. So the tech lead is a skill there: it runs in the main conversation and starts the nine specialists as subagents.
+Cursor, Codex, and Command Code can't make a custom agent the main session. So the tech lead is a skill there: it runs in the main conversation and starts the nine specialists as subagents.
 
 Models follow one rule where the tool lets you pick: planning and review use the strongest model, writing code uses the mid model, read-only lookups use the fast model. Cursor, Copilot, Codex, and Command Code model IDs depend on your plan or provider, so their agents use the session model; add a `model` field if you want to pin one.
 
@@ -103,7 +103,7 @@ Set up the agent template from https://github.com/lulu8879/agent-template in thi
    b. Which agents from the README "Agent team" should I install? List all ten with a one-line role each and mark the ones you recommend: tech-lead, software-architect, code-reviewer, security-engineer, research-analyst, backend-engineer, qa-engineer, support-engineer, and database-engineer for any CodeIgniter 3 or Laravel app; frontend-engineer only if the project has Vue/Inertia or Blade views. "None" is a valid answer.
 3. Clone the repo to a temporary folder outside this project. Copy the contents of each chosen folder (including dot-folders) into the project root, leaving out the agent files I didn't choose, then delete the temporary clone. Ask before overwriting any existing file. If the project already has an AGENTS.md or CLAUDE.md, merge its content into the project section instead. If it already has an opencode.json or another settings file, merge the settings into it instead. If two chosen folders both have AGENTS.md, keep one and merge the "More instructions" tables.
 4. If I left out any agents, keep the rest consistent in every chosen folder:
-   - Delete their files, remove their rows from the Team table in the tech lead file (an agent file or .agents/skills/tech-lead/SKILL.md), and their names from its frontmatter (tools: Agent(...) in claude/, permission.task in opencode/).
+   - Delete their files, remove their rows from the Team table in the tech lead file (an agent file or .agents/skills/tech-lead/SKILL.md), and their names from its frontmatter (tools: Agent(...) in claude/, the subagent rules under permissions in opencode/).
    - Without tech-lead: also delete the tech-lead skill (.claude/skills/tech-lead/ or .agents/skills/tech-lead/) and the tech-lead row in the "More instructions" table of AGENTS.md.
    - No agents at all: delete the empty agents folder.
 5. Add the local file (AGENTS.local.md, or CLAUDE.local.md for claude/) to .gitignore.
@@ -161,7 +161,7 @@ Agents:
 | --- | --- | --- |
 | `claude/` | `.claude/agents/<name>.md` | `name`, `description`, `model` (`opus`/`sonnet`/`haiku`); `tools: Agent(...)` on `tech-lead`, `disallowedTools` on read-only agents |
 | `antigravity/` | `.agents/agents/<name>.md` | `name`, `description`, `mainAgent`, `subagent`, `model` (`pro`/`flash`/`inherit`) |
-| `opencode/` | `.opencode/agents/<name>.md` | `description`, `mode` (`primary` for `tech-lead`), `model` (`provider/model`), `permission` (`task` on `tech-lead`, `edit: deny` on read-only agents) |
+| `opencode/` | `.opencode/agents/<name>.md` | `description`, `mode` (`primary` for `tech-lead`), `model` (`provider/model`), `permissions` list of `action`/`resource`/`effect` (`subagent` rules on `tech-lead`, `edit` deny on read-only agents) |
 | `copilot/` | `.github/agents/<name>.agent.md` | `name`, `description`, `tools` (on `tech-lead` and read-only agents), `disable-model-invocation: true` on `tech-lead` |
 | `cursor/` | `.cursor/agents/<name>.md` | `name`, `description`, `model: inherit`, `readonly: true` on read-only agents |
 | `codex/` | `.codex/agents/<name>.toml` | `name`, `description`, `developer_instructions` (the body) |
@@ -173,7 +173,8 @@ The tech lead's "Start agents with the … tool" line differs per tool. In `curs
 
 ## Notes
 
-- Copying several folders into one project: `antigravity/`, `opencode/`, `codex/`, and `commandcode/` all use `.agents/rules/` and `.agents/skills/`. The rule and skill bodies are identical, so one copy is enough, but keep the frontmatter that each tool needs (Antigravity needs `trigger: glob`; Cursor and Command Code need `disable-model-invocation: true` on skills; Codex needs `agents/openai.yaml`).
+- Copying several folders into one project: `antigravity/`, `opencode/`, `codex/`, and `commandcode/` all use `.agents/rules/` and `.agents/skills/`, and `cursor/` uses `.agents/skills/`. The rule and skill bodies are identical, so one copy is enough, but keep the frontmatter that each tool needs (Antigravity needs `trigger: glob`; Cursor and Command Code need `disable-model-invocation: true` on skills; Codex needs `agents/openai.yaml`).
+- Some agents also read other agents' folders: Cursor reads `.claude/agents/`, `.claude/skills/`, `.codex/agents/`, and `.codex/skills/`; OpenCode reads `.claude/skills/`, `.agents/skills/`, and `CLAUDE.md` in folders without an `AGENTS.md`; Claude Code reads `AGENTS.md` only when there is no `CLAUDE.md`. So copying `claude/` next to `cursor/` or `opencode/` gives those tools a second `tech-lead` and duplicate skills. When a project needs several folders, delete the duplicates the other tool would pick up.
 - Copilot asks before terminal commands by default. To make it always ask before `git push`, add `"chat.tools.terminal.autoApprove": { "git push": false }` to your VS Code User settings (Copilot ignores this in Workspace settings).
 - Codex reads only `AGENTS.md`, so it follows the "More instructions" table for `AGENTS.local.md` and the rules. Codex agent files can't set a sandbox, so read-only agents rely on their instructions.
 - Agents run Pint with the project's own settings. Pint's default preset sorts imports alphabetically and removes blank lines between them, so in projects without a `pint.json` it overrides the import grouping in `laravel-style`.

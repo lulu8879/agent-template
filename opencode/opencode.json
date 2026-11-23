@@ -1,15 +1,29 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "instructions": ["AGENTS.local.md", ".agents/rules/*.md"],
-  "permission": {
-    "skill": {
-      "*": "allow",
-      "refactor-bloated-code": "ask"
+  "instructions": [
+    "AGENTS.local.md",
+    ".agents/rules/*.md"
+  ],
+  "permissions": [
+    {
+      "action": "skill",
+      "resource": "*",
+      "effect": "allow"
     },
-    "shell": {
-      "*": "allow",
-      "git push": "ask",
-      "git push *": "ask"
+    {
+      "action": "skill",
+      "resource": "refactor-bloated-code",
+      "effect": "ask"
+    },
+    {
+      "action": "shell",
+      "resource": "*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "git push *",
+      "effect": "ask"
     }
-  }
+  ]
 }

@@ -2,14 +2,25 @@
 description: "Looks things up for the team: version-correct framework and library docs (Laravel, CodeIgniter, Vue, Inertia, Pinia, packages), or where something lives in the codebase. Read-only; answers with sources."
 mode: subagent
 model: anthropic/claude-haiku-5-5
-permission:
-  edit: deny
-  bash:
-    "*": ask
-    "git status*": allow
-    "git diff*": allow
-    "git log*": allow
-    "git show*": allow
+permissions:
+  - action: edit
+    resource: "*"
+    effect: deny
+  - action: shell
+    resource: "*"
+    effect: ask
+  - action: shell
+    resource: "git status *"
+    effect: allow
+  - action: shell
+    resource: "git diff *"
+    effect: allow
+  - action: shell
+    resource: "git log *"
+    effect: allow
+  - action: shell
+    resource: "git show *"
+    effect: allow
 ---
 
 # Research Analyst

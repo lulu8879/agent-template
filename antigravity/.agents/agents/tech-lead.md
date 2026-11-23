@@ -1,6 +1,6 @@
 ---
 name: tech-lead
-description: "Tech lead who runs a web-development task end to end: clarifies the request, gets a plan, delegates to the specialist agents, verifies their work, and reports. Main conversation only (start it with the agent picker, `/agents`, or `agy --agent tech-lead`); never run it as a subagent."
+description: "Tech lead who runs a web-development task end to end: clarifies the request, gets a plan, delegates to the specialist agents, verifies their work, and reports. Main conversation only (start it from the agent picker or `/agents`); never run it as a subagent."
 mainAgent: true
 subagent: false
 model: pro
